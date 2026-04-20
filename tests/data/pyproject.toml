@@ -3,8 +3,8 @@ name = "test"
 version = "0.1"
 requires-python = ">=3.11"
 dependencies = [
-  # pinned with marker
-  "argcomplete==3.6.1; os_name != 'nt'",
+  # pinned
+  "argcomplete==3.6.1",
   # windows only, using environment marker
   "pywin32==310; os_name=='nt'",
   # unpinned
@@ -19,13 +19,13 @@ dependencies = [
 
 [project.optional-dependencies]
 gui = [
-  # optional dependency, whitespace before version
+  # optional dependency, whitespace after operator
   "ty== 0.0.29",
 ]
 
 [dependency-groups]
 dev = [
-  # dependency group, whitespace after package name
+  # dependency group, whitespace before operator
   "ruff ==0.15.9",
   # package with extra and wildcard version
   "pytest-xdist[psutil]==3.7.*",

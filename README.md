@@ -66,7 +66,7 @@ Dependencies are
   Pcu uses `uv add "package==<version>"` to update pyproject.toml dependencies.
 
 * [packaging](https://packaging.pypa.io/):
-  Parses requirements.txt dependencies with the packaging.requirements.Requirement class.
+  Parses dependencies with the packaging.requirements.Requirement class.
 
 Pcu needs Python >= 3.11 since it uses the tomllib Python module.
 
@@ -77,8 +77,9 @@ Limitations
 ------------
 
 * No library api is available, only the pcu command line interface as a single script.
-* Pcu only supports environment markers `os_name`, `sys_platform` with `==` operator.
+* Pcu only supports environment markers `os_name` and `sys_platform` with `==` operator.
+  All other environment markers are ignored.
 * References (`-r`) inside requirements.txt are not supported.  
   You can provide multiple requirements.txt files as arguments to pcu instead.
 * Constraint references (`-c`) inside requirements.txt are not supported.  
-  Use the `--constraints` option from pcu instead.
+  Use the `--constraints` option instead.
