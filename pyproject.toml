@@ -1,0 +1,37 @@
+[project]
+name = "python-check-updates"
+version = "0.1"
+requires-python = ">=3.11"
+# https://pypi.org/classifiers/
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Build Tools",
+]
+dependencies = [
+  "packaging==26.0",
+]
+
+[dependency-groups]
+# these modules are only needed for development
+dev = [
+  # for python code linting
+  "ruff==0.15.10",
+  # for python type checking
+  "ty==0.0.29",
+  # for testing
+  "pytest==9.0.3",
+]
+
+[tool.project]
+# pin versions of Python and uv for development
+python_version_dev = "3.14.4"
+uv_version_dev = "0.11.7"

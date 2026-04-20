@@ -1,0 +1,47 @@
+target-version = "py311"
+
+[lint]
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "B", # flake8-bugbear
+    "I", # isort
+    "D", # pydocstyle
+    "FIX", # fixme
+    "FA", # future-annotation
+    "LOG", # logging
+    "INP", # PEP420
+    "PIE", # flake8-pie
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "PLC", # pylint convention
+    "PLE", # pylint error
+    "PLW", # pylint warning
+    "RUF", # ruff
+    "UP", # pyupgrade
+    "YTT", # flake8-2020
+]
+
+# Ignored rules
+ignore = [
+    "E501", # line-too-long
+    "I001", # unsorted-imports
+    "D205", # blank-line-after-summary
+    "D402", # no-signature
+    "D415", # ends-in-punctuation
+    "D417", # undocumented-param
+]
+
+
+[lint.per-file-ignores]
+
+[lint.isort]
+known-first-party = []
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+force-sort-within-sections = false
+
+[lint.pydocstyle]
+convention = "google"
+
+[format]
+quote-style = "preserve"

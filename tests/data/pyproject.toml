@@ -1,0 +1,32 @@
+[project]
+name = "test"
+version = "0.1"
+requires-python = ">=3.11"
+dependencies = [
+  # pinned with marker
+  "argcomplete==3.6.1; os_name != 'nt'",
+  # unpinned
+  "requests",
+  # loose pinned
+  "Django >=5",
+  # multi-version pinned
+  "sphinx >8,<9",
+  # URL referenced
+  "urllib3 @ https://example.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip",
+]
+
+[project.optional-dependencies]
+gui = [
+  # optional dependency, whitespace before version
+  "ty== 0.0.29",
+]
+
+[dependency-groups]
+dev = [
+  # dependency group, whitespace after package name
+  "ruff ==0.15.9",
+  # package with extra, star-matching version and marker
+  "pytest-xdist[psutil]==3.7.*",
+  # project dep
+  "test",
+]

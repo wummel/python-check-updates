@@ -1,0 +1,27 @@
+# generated python files
+__pycache__
+/.pytest_cache
+/.ruff_cache
+/uv.lock
+/.venv
+
+# build and dist dirs
+/build
+/dist
+/.achievements
+/MANIFEST
+
+# local files
+/pcu.egg-info/
+# configuration for direnv(1)
+/.envrc
+
+# local development files
+/bin
+/.python-version
+
+# todo.txt files
+/todo.txt
+/todo.txt.bak
+/done.txt
+/report.txt
