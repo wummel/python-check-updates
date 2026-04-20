@@ -30,8 +30,8 @@ TESTOPTS=
 PY_FILES_DIRS:=pcu tests
 
 # Release configuration
-RELEASE_NAME:=$(PROJECT)-$(VERSION)
-RELEASE_SOURCE:=$(RELEASE_NAME).tar.xz
+RELEASE_NAME:=$(subst -,_,$(PROJECT))-$(VERSION)
+RELEASE_SOURCE:=$(RELEASE_NAME).tar.gz
 RELEASE_BRANCH:=main
 RELEASE_TAG:=$(VERSION)
 RELEASE_FILES:=\
@@ -142,9 +142,10 @@ release: distclean checkrelease	## create release
 		--mtime='$(shell git log -1 --pretty=%cI)' \
 		--owner=0 --group=0 --numeric-owner \
 		--pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
-		--xz \
+		--gzip \
 		--create \
 		--file dist/$(RELEASE_SOURCE) $(RELEASE_FILES) && \
+	  git checkout $(RELEASE_BRANCH); \
 	  echo "Released dist/$(RELEASE_SOURCE)"; \
 	fi
 
