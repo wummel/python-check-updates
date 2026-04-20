@@ -61,7 +61,12 @@ class RequirementsTxtTest(unittest.TestCase):
         shutil.copy(origfile, tmpdir)
         try:
             filename = os.path.join(tmpdir, "requirements.txt")
-            packagedeps = ("argcomplete==3.6.1", "ty== 0.0.29", "ruff ==0.15.9", "pywin32==310")
+            packagedeps = (
+                "argcomplete==3.6.1",
+                "ty== 0.0.29",
+                "ruff ==0.15.9",
+                "pywin32==310",
+            )
             with open(filename) as f:
                 content = f.read()
                 for dep in packagedeps:

@@ -253,6 +253,17 @@ def check_requirement(pkg_req: Requirement) -> Requirement | None:
     return None
 
 
+def get_python_platform_from_req(pkg_req: Requirement) -> str | None:
+    """Determine value to use for 'uv pip compile --python-platform'"""
+    if not pkg_req.marker:
+        return None
+    markerlist = pkg_req.marker._markers
+    return get_python_platform(
+        os_name=get_marker_value(markerlist, "os_name"),
+        sys_platform=get_marker_value(markerlist, "sys_platform"),
+    )
+
+
 def update_pyproject_dependencies(
     dependencies: list[str],
     project_dir: str,
@@ -284,21 +295,12 @@ def update_pyproject_dependencies(
         # respect optional package filter
         if packages and pkg_req.name not in packages:
             continue
-        python_platform = None
-        if pkg_req.marker:
-            markerlist = pkg_req.marker._markers
-            os_name = get_marker_value(markerlist, "os_name")
-            if os_name:
-                python_platform = get_python_platform(os_name=os_name)
-            sys_platform = get_marker_value(markerlist, "sys_platform")
-            if sys_platform:
-                python_platform = get_python_platform(sys_platform=sys_platform)
         try:
             latest_version = get_latest_version(
                 pkg_req.name,
                 exclude_newer=exclude_newer,
                 constraint_file=constraint_file,
-                python_platform=python_platform,
+                python_platform=get_python_platform_from_req(pkg_req),
             )
         except Exception as exc:
             # error getting latest version
@@ -432,40 +434,31 @@ def handle_requirements_txt(
     color: bool = True,
 ) -> int:
     """Check or update pinned dependencies of a requirements.txt file."""
-    python_platform = None
     output = io.StringIO()
     updatable = 0
     with open(requirements_txt_path) as f:
         for line in f:
-            req = parse_requirement(
+            pkg_req = parse_requirement(
                 line, exclude_newer=exclude_newer, constraint_file=constraint_file
             )
-            if req is None:
+            if pkg_req is None:
                 output.write(line)
             else:
-                if req.marker:
-                    markerlist = req.marker._markers
-                    os_name = get_marker_value(markerlist, "os_name")
-                    if os_name:
-                        python_platform = get_python_platform(os_name=os_name)
-                    sys_platform = get_marker_value(markerlist, "sys_platform")
-                    if sys_platform:
-                        python_platform = get_python_platform(sys_platform=sys_platform)
                 try:
                     latest_version = get_latest_version(
-                        req.name,
+                        pkg_req.name,
                         exclude_newer=exclude_newer,
                         constraint_file=constraint_file,
-                        python_platform=python_platform,
+                        python_platform=get_python_platform_from_req(pkg_req),
                     )
                 except Exception as exc:
                     # error getting latest version
                     logger.warning(
-                        f"error getting latest version for {req.name!r}: {exc}"
+                        f"error getting latest version for {pkg_req.name!r}: {exc}"
                     )
                     latest_version = None
-                spec = next(s for s in req.specifier)
-                if packages and req.name not in packages:
+                spec = next(s for s in pkg_req.specifier)
+                if packages and pkg_req.name not in packages:
                     output.write(line)
                 elif latest_version is not None and latest_version != spec.version:
                     logger.warning(
