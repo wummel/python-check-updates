@@ -160,6 +160,7 @@ release: distclean checkrelease	## create release
 release-gh:	## upload a new release to github
 	gh release create \
 	  --title "Release $(RELEASE_TAG)" \
+	  --notes-from-tag \
 	  --latest \
 	  --draft=false \
 	  --prerelease=false \
