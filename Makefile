@@ -149,10 +149,6 @@ release: distclean checkrelease	## create release
 	  echo "Released dist/$(RELEASE_SOURCE)"; \
 	fi
 
-.PHONY: release-pypi
-release-pypi: ## upload a new release to pypi
-	uv publish dist/$(RELEASE_SOURCE)
-
 # export GITHUB_TOKEN for the gh command
 # Generate a fine grained access token with:
 # - Restricted to this repository
@@ -167,7 +163,8 @@ release-gh:	## upload a new release to github
 	  --latest \
 	  --draft=false \
 	  --prerelease=false \
-	  --verify-tag "$(RELEASE_TAG)" \
+	  --verify-tag \
+	  "$(RELEASE_TAG)" \
 	  dist/$(RELEASE_SOURCE)
 
 .PHONY: checkrelease
