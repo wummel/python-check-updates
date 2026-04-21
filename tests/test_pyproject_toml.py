@@ -61,7 +61,12 @@ class PyprojectTomlTest(unittest.TestCase):
         shutil.copy(origfile, tmpdir)
         try:
             filename = os.path.join(tmpdir, "pyproject.toml")
-            packagedeps = ("argcomplete==3.6.1", "ty== 0.0.29", "ruff ==0.15.9", "tensorflow==2.14.0")
+            packagedeps = (
+                "argcomplete==3.6.1",
+                "ty== 0.0.29",
+                "ruff ==0.15.9",
+                "tensorflow==2.14.0",
+            )
             with open(filename) as f:
                 content = f.read()
                 for dep in packagedeps:
