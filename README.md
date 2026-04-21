@@ -11,6 +11,7 @@ Features
 * updates pinned dependencies, ignores unpinned dependencies
 * supports both pyproject.toml and requirements.txt formats
 * supports `[project.dependencies]`, `[project.optional-dependencies]` and `[dependency-groups]` in pyproject.toml
+* supports recursive references (-r) in requirements.txt formats
 * can run in check only mode, ie. it checks if updates are available
 * limit updates to specific packages
 * limit updates with package version constraints (ie. "django<6")
@@ -27,9 +28,9 @@ Examples
 pcu check requirements.txt
 
 # check all pinned packages for updates in several requirements.txt-style files
-pcu check requirements/*.txt
+pcu check requirements/*.in
 
-# update all pinned packages for updates in pyproject.toml
+# update all pinned packages in pyproject.toml
 # limit updates to versions that are at least 10 days old
 pcu --exclude-newer="10 days" update pyproject.toml
 
@@ -37,6 +38,8 @@ pcu --exclude-newer="10 days" update pyproject.toml
 # limit updates to django versions less than 6
 pcu --package="django" --constraints="django<6" update pyproject.toml
 ```
+
+If your project relies on a [project directory](https://docs.astral.sh/uv/concepts/projects/layout/) (for example to define additional packages index in pyproject.toml), run `pcu` from your project root directory.
 
 After updating versions in pyproject.toml, run `uv lock --upgrade` to update
 the transitive dependencies in `uv.lock`.
@@ -77,9 +80,9 @@ Limitations
 ------------
 
 * No library api is available, only the pcu command line interface as a single script.
+* No support for custom dependency formats in pyproject.toml
+  (eg. `[tool.poetry.dependencies]`).
 * Pcu only supports environment markers `os_name` and `sys_platform` with `==` operator.
   All other environment markers are ignored.
-* References (`-r`) inside requirements.txt are not supported.  
-  You can provide multiple requirements.txt files as arguments to pcu instead.
 * Constraint references (`-c`) inside requirements.txt are not supported.  
   Use the `--constraints` option instead.

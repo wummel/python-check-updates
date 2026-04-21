@@ -57,13 +57,14 @@ class RequirementsTxtTest(unittest.TestCase):
         """Run pcu update"""
         # create a temporary directory for updating the file
         origfile = os.path.join(datadir, "requirements.txt")
+        otherfile = os.path.join(datadir, "other-requirements.txt")
         tmpdir = tempdir(dir=basedir)
         shutil.copy(origfile, tmpdir)
+        shutil.copy(otherfile, tmpdir)
         try:
             filename = os.path.join(tmpdir, "requirements.txt")
             packagedeps = (
                 "argcomplete==3.6.1",
-                "ty== 0.0.29",
                 "ruff ==0.15.9",
                 "pywin32==310",
             )
@@ -76,9 +77,10 @@ class RequirementsTxtTest(unittest.TestCase):
             result = subprocess.run(cmd, check=True, text=True, capture_output=True)
             output = result.stdout.strip()
             self.assertIn("update 'argcomplete==", output)
-            self.assertIn("update 'ty== ", output)
             self.assertIn("update 'ruff ==", output)
             self.assertIn("update 'pywin32==", output)
+            # from other-requirements.txt
+            self.assertIn("update 'ty== ", output)
             # check that old package versions have been updated
             with open(filename) as f:
                 content = f.read()

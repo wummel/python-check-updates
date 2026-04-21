@@ -1,0 +1,5 @@
+# whitespace after operator
+ty== 0.0.29
+
+# infinite recursion
+-r other-requirements.txt

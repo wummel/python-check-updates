@@ -2,8 +2,6 @@
 argcomplete==3.6.1
 # whitespace before operator
 ruff ==0.15.9
-# whitespace after operator
-ty== 0.0.29
 # windows only, using environment marker
 pywin32==310; os_name=='nt'
 

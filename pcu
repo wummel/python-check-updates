@@ -24,10 +24,12 @@ from packaging.requirements import Requirement
 from packaging.markers import Variable, MarkerList
 
 
-def usage() -> None:
+def usage(msg: str | None = None) -> None:
     """Print usage info"""
+    if msg:
+        logger.error(msg)
     logger.info("pcu [options] [check|update] <dependency-file>...")
-    sys.exit(1)
+    sys.exit(-1)
 
 
 logger = logging.getLogger(os.path.basename(__file__))
@@ -57,7 +59,10 @@ def get_latest_version(
     python_platform: str | None = None,
     python_version: str | None = None,
 ) -> str:
-    """Get the latest version of a package."""
+    """Get the latest version of a package.
+    `python_platform` defines the platform for which requirements should be resolved.
+    `python_version` defines the minimum Python version that must be supported by the resolved requirements. If a patch version is omitted, the minimum patch version is assumed. For example, 3.8 is mapped to 3.8.0.
+    """
     cmd = [
         "uv",
         "pip",
@@ -78,7 +83,7 @@ def get_latest_version(
         cmd.extend(("--python-platform", python_platform))
     if python_version:
         cmd.extend(("--python-version", python_version))
-    logger.debug(f"running {cmd} with input {package!r}")
+    logger.debug(f"running '{' '.join(cmd)}' with input {package!r}")
     result = subprocess.run(
         cmd, check=True, text=True, input=package, capture_output=True
     )
@@ -171,6 +176,7 @@ def handle_pyproject_toml(
     Specification: https://packaging.python.org/en/latest/specifications/pyproject-toml/
     Friendly guide: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
     """
+    logger.info(f"handling pyproject {pyproject_path}")
     updatable = 0
     project_dir = os.path.abspath(os.path.dirname(pyproject_path))
     # parse pyproject.toml
@@ -259,9 +265,17 @@ def get_python_platform_from_req(pkg_req: Requirement) -> str | None:
         return None
     markerlist = pkg_req.marker._markers
     return get_python_platform(
-        os_name=get_marker_value(markerlist, "os_name"),
-        sys_platform=get_marker_value(markerlist, "sys_platform"),
+        os_name=get_marker_value(markerlist, "os_name", opfilter=("==",)),
+        sys_platform=get_marker_value(markerlist, "sys_platform", opfilter=("==",)),
     )
+
+
+def get_min_python_version_from_req(pkg_req: Requirement) -> str | None:
+    """Determine value to use for 'uv pip compile --python-version'"""
+    if not pkg_req.marker:
+        return None
+    markerlist = pkg_req.marker._markers
+    return get_marker_value(markerlist, "python_version", opfilter=(">=", ""))
 
 
 def update_pyproject_dependencies(
@@ -282,7 +296,7 @@ def update_pyproject_dependencies(
         try:
             pkg_req = Requirement(dep)
         except Exception as exc:
-            logger.debug(f"error parsing exception: {exc}")
+            logger.debug(f"error parsing requirement: {exc}")
             logger.info(f"skip unsupported dependency {dep!r}")
             continue
         if check_requirement(pkg_req) is None:
@@ -301,10 +315,12 @@ def update_pyproject_dependencies(
                 exclude_newer=exclude_newer,
                 constraint_file=constraint_file,
                 python_platform=get_python_platform_from_req(pkg_req),
+                python_version=get_min_python_version_from_req(pkg_req),
             )
-        except Exception as exc:
+        except subprocess.CalledProcessError as exc:
             # error getting latest version
-            logger.warning(f"error getting latest version for '{pkg_req}': {exc}")
+            err = f"{exc}, output={exc.output}, stderr={exc.stderr}"
+            logger.warning(f"error getting latest version for '{pkg_req}': {err}")
             latest_version = None
         spec = next(s for s in pkg_req.specifier)
         if latest_version is not None and latest_version != spec.version:
@@ -340,7 +356,7 @@ def update_pyproject_pkg(
         command.append("--group")
         command.append(group)
     command.append(f"{dependency}")
-    logger.debug(f"running {command}")
+    logger.debug(f"running {' '.join(command)}")
     subprocess.check_call(command)
 
 
@@ -348,18 +364,21 @@ def parse_requirement(
     line: str,
     exclude_newer: None | str = None,
     constraint_file: None | str = None,
-) -> None | Requirement:
+) -> None | str | Requirement:
     """Parse one line of a requirements.txt file."""
     line = line.strip()
     if not line or line.startswith("#"):
         # ignore comments
         return None
-    if line.startswith("-r"):
-        logger.info(
-            f"Ignore requirements reference {line!r}, specify as additional file instead"
-        )
+    if line.endswith("\\"):
+        line = line[:-1]
+    if line.startswith("--hash"):
+        logger.info(f"Ignore requirements hash {line!r}")
         return None
-    if line.startswith("-c"):
+    if re.search(r"^-r\s+", line):
+        # recursion
+        return line.split(maxsplit=1)[1].strip()
+    if re.search(r"^-c\s+", line):
         logger.info(
             f"Ignore constraints reference {line!r}, use pcu --constraints instead"
         )
@@ -385,12 +404,18 @@ def parse_requirement(
         return None
     if len(pkg_req.specifier) < 1:
         msg = f"skip non-versioned dependency '{pkg_req}'"
-        latest_version = get_latest_version(
-            pkg_req.name,
-            exclude_newer=exclude_newer,
-            constraint_file=constraint_file,
-        )
-        msg += f", pin latest version with '{pkg_req.name}=={latest_version}'"
+        try:
+            latest_version = get_latest_version(
+                pkg_req.name,
+                exclude_newer=exclude_newer,
+                constraint_file=constraint_file,
+            )
+            msg += f", pin latest version with '{pkg_req.name}=={latest_version}'"
+        except subprocess.CalledProcessError as exc:
+            # error getting latest version
+            err = f"{exc}, output={exc.output}, stderr={exc.stderr}"
+            logger.warning(f"error getting latest version for '{pkg_req}': {err}")
+            latest_version = None
         logger.info(msg)
         return None
     if len(pkg_req.specifier) > 1:
@@ -407,12 +432,17 @@ def parse_requirement(
     return None
 
 
-def get_marker_value(markerlist: MarkerList, varname: str) -> str | None:
-    """Search variable definitions with "==" in markerlist."""
+def get_marker_value(
+    markerlist: MarkerList, varname: str, opfilter: tuple[str, ...] | None = None
+) -> str | None:
+    """Search variable definitions in markerlist.
+    `varname`: variable name to match
+    `opfilter`: optional operator string to match.
+    """
     for marker in markerlist:
         if isinstance(marker, tuple):
             left, op, right = marker
-            if op.serialize() != "==":
+            if opfilter and op.serialize() not in opfilter:
                 continue
             if isinstance(left, Variable):
                 var = left.value
@@ -425,6 +455,10 @@ def get_marker_value(markerlist: MarkerList, varname: str) -> str | None:
     return None
 
 
+# maximum recursion level for requirements.txt
+max_rec_level = 5
+
+
 def handle_requirements_txt(
     requirements_txt_path: str,
     command: None | str = None,
@@ -432,8 +466,21 @@ def handle_requirements_txt(
     exclude_newer: None | str = None,
     constraint_file: None | str = None,
     color: bool = True,
+    rec_level: int = 0,
+    handled_files=None,
 ) -> int:
     """Check or update pinned dependencies of a requirements.txt file."""
+    msg = f"handling requirements {requirements_txt_path}"
+    if rec_level > 0:
+        msg += f", recursion level {rec_level}"
+    logger.info(msg)
+    if rec_level > max_rec_level:
+        logger.error(f"recursion level greater than maximum {max_rec_level}, ignoring")
+        return 0
+    if handled_files is None:
+        handled_files = [os.path.abspath(requirements_txt_path)]
+    else:
+        handled_files.append(os.path.abspath(requirements_txt_path))
     output = io.StringIO()
     updatable = 0
     with open(requirements_txt_path) as f:
@@ -443,6 +490,21 @@ def handle_requirements_txt(
             )
             if pkg_req is None:
                 output.write(line)
+            elif isinstance(pkg_req, str):
+                output.write(line)
+                base_dir = os.path.dirname(requirements_txt_path)
+                requirements_txt_child = os.path.join(base_dir, pkg_req)
+                if os.path.abspath(requirements_txt_child) not in handled_files:
+                    updatable += handle_requirements_txt(
+                        requirements_txt_child,
+                        command,
+                        packages=packages,
+                        exclude_newer=exclude_newer,
+                        constraint_file=constraint_file,
+                        color=color,
+                        rec_level=rec_level + 1,
+                        handled_files=handled_files,
+                    )
             else:
                 try:
                     latest_version = get_latest_version(
@@ -450,11 +512,13 @@ def handle_requirements_txt(
                         exclude_newer=exclude_newer,
                         constraint_file=constraint_file,
                         python_platform=get_python_platform_from_req(pkg_req),
+                        python_version=get_min_python_version_from_req(pkg_req),
                     )
-                except Exception as exc:
+                except subprocess.CalledProcessError as exc:
                     # error getting latest version
+                    err = f"{exc}, output={exc.output}, stderr={exc.stderr}"
                     logger.warning(
-                        f"error getting latest version for {pkg_req.name!r}: {exc}"
+                        f"error getting latest version for {pkg_req.name!r}: {err}"
                     )
                     latest_version = None
                 spec = next(s for s in pkg_req.specifier)
@@ -528,6 +592,40 @@ def get_option_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def handle_dependency_file(dep_file, optargs, constraint_file):
+    """Check a dependency file file updates."""
+    if not os.path.isfile(dep_file):
+        usage(f"path {dep_file} not found")
+    # limit to 1MB to prevent denial-of-service
+    if os.stat(dep_file).st_size > 1024 * 1014:
+        usage(f"path {dep_file} is >1 MB")
+    if str(dep_file).lower().endswith(".toml"):
+        # pyproject.toml format
+        updatable = handle_pyproject_toml(
+            dep_file,
+            packages=optargs.packages,
+            command=optargs.command,
+            exclude_newer=optargs.exclude_newer,
+            constraint_file=constraint_file,
+            color=optargs.color,
+        )
+    elif str(dep_file).lower().endswith((".txt", ".in")):
+        # requirements.txt format
+        updatable = handle_requirements_txt(
+            dep_file,
+            packages=optargs.packages,
+            command=optargs.command,
+            exclude_newer=optargs.exclude_newer,
+            constraint_file=constraint_file,
+            color=optargs.color,
+        )
+    else:
+        usage(
+            f"no pyproject.toml or requirements.txt format detected for path {dep_file}"
+        )
+    return updatable
+
+
 def main(args: list[str]) -> int:
     """Parse options and check or update dependencies."""
     # parse options
@@ -556,30 +654,10 @@ def main(args: list[str]) -> int:
     # handle all given dependency files
     try:
         for dep_file in optargs.dep_files:
-            if not os.path.isfile(dep_file):
-                logger.error(f"path {dep_file} not found")
-                usage()
-            logger.info(f"handling {dep_file}")
-            if str(dep_file).lower().endswith(".toml"):
-                # pyproject.toml
-                updatable = handle_pyproject_toml(
-                    dep_file,
-                    packages=optargs.packages,
-                    command=optargs.command,
-                    exclude_newer=optargs.exclude_newer,
-                    constraint_file=constraint_file,
-                    color=optargs.color,
-                )
-            else:
-                # assume requirements.txt format
-                updatable = handle_requirements_txt(
-                    dep_file,
-                    packages=optargs.packages,
-                    command=optargs.command,
-                    exclude_newer=optargs.exclude_newer,
-                    constraint_file=constraint_file,
-                    color=optargs.color,
-                )
+            updatable = handle_dependency_file(dep_file, optargs, constraint_file)
+    except Exception as exc:
+        logger.error(f"error handling dependency files: {exc}")
+        return -1
     finally:
         if remove_constraint_file and constraint_file:
             os.unlink(constraint_file)
