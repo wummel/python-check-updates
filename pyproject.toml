@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
 ]
 dependencies = [
-  "packaging==26.0",
+  "packaging==26.1",
 ]
 
 [dependency-groups]
