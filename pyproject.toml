@@ -24,7 +24,7 @@ dependencies = [
 # these modules are only needed for development
 dev = [
   # for python code linting
-  "ruff==0.15.10",
+  "ruff==0.15.11",
   # for python type checking
   "ty==0.0.31",
   # for testing
