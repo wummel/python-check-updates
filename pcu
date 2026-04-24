@@ -236,12 +236,13 @@ def handle_pyproject_toml(
     return updatable
 
 
-# see https://packaging.python.org/en/latest/specifications/version-specifiers/#id5
-comparator_pattern = r"(===|==|<=|>=|~=|!=|<|>)"
-
-
-def check_requirement(pkg_req: Requirement) -> Requirement | None:
+def check_requirement(
+    pkg_req: Requirement, projectname: str | None = None
+) -> Requirement | None:
     """Check if requirement is pinned, else log and return None."""
+    if projectname and pkg_req.name == projectname:
+        logger.info(f"skip project name dependency {pkg_req}")
+        return None
     if pkg_req.url:
         logger.info(f"skip URL-pinned package dependency '{pkg_req}'")
         return None
@@ -305,11 +306,7 @@ def update_pyproject_dependencies(
             logger.debug(f"error parsing requirement: {exc}")
             logger.info(f"skip unsupported dependency {dep!r}")
             continue
-        if check_requirement(pkg_req) is None:
-            continue
-        # check for project dependency
-        if pkg_req.name == projectname:
-            logger.info(f"skip project name dependency {dep!r}")
+        if check_requirement(pkg_req, projectname=projectname) is None:
             continue
 
         # respect optional package filter
