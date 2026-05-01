@@ -27,7 +27,9 @@ TESTS ?= tests/
 # set test options
 TESTOPTS=
 # python files and directories
-PY_FILES_DIRS:=pcu tests
+PY_FILES_DIRS:=\
+  pcu \
+  tests
 
 # Release configuration
 RELEASE_NAME:=$(subst -,_,$(PROJECT))-$(VERSION)
