@@ -33,11 +33,11 @@ class RequirementsTxtTest(unittest.TestCase):
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
-        self.assertIn("update 'argcomplete==", output)
-        self.assertIn("update 'ty== ", output)
-        self.assertIn("update 'ruff ==", output)
-        self.assertIn("update 'pywin32==", output)
-        self.assertIn("update 'certifi===", output)
+        self.assertIn("found update 'argcomplete==", output)
+        self.assertIn("found update 'ty== ", output)
+        self.assertIn("found update 'ruff ==", output)
+        self.assertIn("found update 'pywin32==", output)
+        self.assertIn("found update 'certifi===", output)
 
     @needs_program('uv')
     def test_requirements_check_package(self):
@@ -48,11 +48,11 @@ class RequirementsTxtTest(unittest.TestCase):
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
-        self.assertNotIn("update 'argcomplete==", output)
-        self.assertIn("update 'ty== ", output)
-        self.assertNotIn("update 'ruff ==", output)
-        self.assertNotIn("update 'pywin32==", output)
-        self.assertNotIn("update 'certifi===", output)
+        self.assertNotIn("found update 'argcomplete==", output)
+        self.assertIn("found update 'ty== ", output)
+        self.assertNotIn("found update 'ruff ==", output)
+        self.assertNotIn("found update 'pywin32==", output)
+        self.assertNotIn("found update 'certifi===", output)
 
     @needs_program('uv')
     def test_requirements_update(self):
@@ -79,12 +79,12 @@ class RequirementsTxtTest(unittest.TestCase):
             cmd = [pcu, "update", filename]
             result = subprocess.run(cmd, check=True, text=True, capture_output=True)
             output = result.stdout.strip()
-            self.assertIn("update 'argcomplete==", output)
-            self.assertIn("update 'ruff ==", output)
-            self.assertIn("update 'pywin32==", output)
-            self.assertIn("update 'certifi===", output)
+            self.assertIn("updating 'argcomplete==", output)
+            self.assertIn("updating 'ruff ==", output)
+            self.assertIn("updating 'pywin32==", output)
+            self.assertIn("updating 'certifi===", output)
             # from other-requirements.txt
-            self.assertIn("update 'ty== ", output)
+            self.assertIn("updating 'ty== ", output)
             # check that old package versions have been updated
             with open(filename) as f:
                 content = f.read()

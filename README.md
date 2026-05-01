@@ -1,8 +1,7 @@
 python-check-updates
 =====================
-Python-check-updates (pcu) updates pinned dependencies in `pyproject.toml` or
-`requirements.txt` to the latest versions.  
-Pinning dependencies is an important part for [reproducible builds](https://en.wikipedia.org/wiki/Reproducible_builds).
+Python-check-updates (pcu) checks or updates dependencies
+in `pyproject.toml` and `requirements.txt` files.  
 
 
 Features
@@ -26,28 +25,28 @@ Examples
 ```bash
 $ # check all pinned packages for updates in pyproject.toml
 $ pcu check pyproject.toml
-INFO: handling pyproject file pyproject.toml
-WARNING: update 'ty==0.0.29' --> 0.0.32
+pcu INFO: check pyproject file pyproject.toml
+pcu WARNING: found update 'ty==0.0.29' --> 0.0.32
 
 $ # update all pinned packages in pyproject.toml
 $ # limit updates to versions that are at least 7 days old
 $ pcu --exclude-newer="7 days" update pyproject.toml
-INFO: handling pyproject file pyproject.toml
-WARNING: update 'ty==0.0.29' --> 0.0.31
-INFO: Wrote 1 updated package versions to pyproject.toml
+pcu INFO: update pyproject file pyproject.toml
+pcu INFO: updating 'ty==0.0.29' --> 0.0.31
+pcu INFO: Wrote 1 updated package version(s) to pyproject.toml
 
 $ # check all pinned packages for updates in requirements.txt
 $ pcu check requirements.txt
-INFO: handling requirements file requirements.txt
-WARNING: update 'argcomplete==3.6.1' --> 3.6.3
-WARNING: update 'Django==5.2.0' --> 6.0.4
+pcu INFO: check requirements file requirements.txt
+pcu WARNING: found update 'argcomplete==3.6.1' --> 3.6.3
+pcu WARNING: found update 'Django==5.2.0' --> 6.0.4
 
 $ # update only the django package version in requirements.txt
 $ # limit updates to django versions less than 6
 $ pcu --package="Django" --constraints="Django<6" update requirements.txt
-INFO: handling requirements file requirements.txt
-WARNING: update 'Django==5.2.0' --> 5.2.13
-INFO: Wrote 1 updated package versions to requirements.txt
+INFO: update requirements file requirements.txt
+INFO: updating 'Django==5.2.0' --> 5.2.13
+INFO: Wrote 1 updated package version(s) to requirements.txt
 ```
 
 Script behaviour
@@ -100,6 +99,9 @@ Pcu needs Python >= 3.11 since it uses the tomllib Python module.
 
 Pcu consists of a single python script. The script uses [inline script metadata](https://peps.python.org/pep-0723/) to be executed directly with `uv run --script`.  
 This enables simple packaging and installation.
+
+Only handles pinned dependencies, since they should always be pinned to enable
+[reproducible builds](https://en.wikipedia.org/wiki/Reproducible_builds).
 
 
 Limitations

@@ -33,11 +33,11 @@ class PyprojectTomlTest(unittest.TestCase):
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
-        self.assertIn("update 'argcomplete==", output)
-        self.assertIn("update 'ty== ", output)
-        self.assertIn("update 'ruff ==", output)
-        self.assertIn("update 'tensorflow==", output)
-        self.assertIn("update 'certifi===", output)
+        self.assertIn("found update 'argcomplete==", output)
+        self.assertIn("found update 'ty== ", output)
+        self.assertIn("found update 'ruff ==", output)
+        self.assertIn("found update 'tensorflow==", output)
+        self.assertIn("found update 'certifi===", output)
 
     @needs_program('uv')
     def test_pyproject_check_package(self):
@@ -48,11 +48,11 @@ class PyprojectTomlTest(unittest.TestCase):
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
-        self.assertNotIn("update 'argcomplete==", output)
-        self.assertIn("update 'ty== ", output)
-        self.assertNotIn("update 'ruff ==", output)
-        self.assertNotIn("update 'tensorflow==", output)
-        self.assertNotIn("update 'certifi===", output)
+        self.assertNotIn("found update 'argcomplete==", output)
+        self.assertIn("found update 'ty== ", output)
+        self.assertNotIn("found update 'ruff ==", output)
+        self.assertNotIn("found update 'tensorflow==", output)
+        self.assertNotIn("found update 'certifi===", output)
 
     @needs_program('uv')
     def test_pyproject_update(self):
@@ -78,12 +78,11 @@ class PyprojectTomlTest(unittest.TestCase):
             cmd = [pcu, "update", filename]
             result = subprocess.run(cmd, check=True, text=True, capture_output=True)
             output = result.stdout.strip()
-            self.assertIn("update 'argcomplete==", output)
-            self.assertIn("update 'ty== ", output)
-            self.assertIn("update 'ruff ==", output)
-            self.assertIn("update 'tensorflow==", output)
-            self.assertIn("update 'certifi===", output)
-            self.assertIn("skip include-group dependency", output)
+            self.assertIn("updating 'argcomplete==", output)
+            self.assertIn("updating 'ty== ", output)
+            self.assertIn("updating 'ruff ==", output)
+            self.assertIn("updating 'tensorflow==", output)
+            self.assertIn("updating 'certifi===", output)
             # check that old package versions have been updated
             with open(filename) as f:
                 content = f.read()

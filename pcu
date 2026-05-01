@@ -43,7 +43,7 @@ def init_logging(stream=sys.stdout) -> None:
     # do not propagate log message to higher log level handlers (in our case the root level)
     logger.propagate = False
     handler = logging.StreamHandler(stream=stream)
-    format = "%(levelname)s: %(message)s"
+    format = "%(name)s %(levelname)s: %(message)s"
     handler.setFormatter(logging.Formatter(format))
     logger.addHandler(handler)
     # set the log level to INFO, and change to DEBUG with --verbose
@@ -177,7 +177,7 @@ def handle_pyproject_toml(
     Specification: https://packaging.python.org/en/latest/specifications/pyproject-toml/
     Friendly guide: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
     """
-    logger.info(f"handling pyproject file {pyproject_path}")
+    logger.info(f"{command} pyproject file {pyproject_path}")
     updatable = 0
     project_dir = os.path.abspath(os.path.dirname(pyproject_path))
     # parse pyproject.toml
@@ -232,7 +232,7 @@ def handle_pyproject_toml(
                 color=color,
             )
     if command == "update" and updatable > 0:
-        logger.info(f"Wrote {updatable} updated package versions to {pyproject_path}")
+        logger.info(f"Updated {updatable} package version(s) in {pyproject_path}")
     return updatable
 
 
@@ -298,7 +298,7 @@ def update_pyproject_dependencies(
     updatable = 0
     for dep in dependencies:
         if isinstance(dep, dict):
-            logger.info(f"skip include-group dependency {dep!r} in group {group}")
+            logger.debug(f"skip include-group dependency {dep!r} in group {group}")
             continue
         try:
             pkg_req = Requirement(dep)
@@ -327,11 +327,16 @@ def update_pyproject_dependencies(
             latest_version = None
         spec = next(s for s in pkg_req.specifier)
         if latest_version is not None and latest_version != spec.version:
-            logger.warning(
-                f"update '{dep}' --> {colorize_updated_version(spec.version, latest_version) if color else latest_version}"
-            )
             updatable += 1
-            if command == "update":
+            version = (
+                colorize_updated_version(spec.version, latest_version)
+                if color
+                else latest_version
+            )
+            if command == "check":
+                logger.warning(f"found update '{dep}' --> {version}")
+            else:
+                logger.info(f"updating '{dep}' --> {version}")
                 newdep = dep.replace(spec.version, latest_version, 1)
                 update_pyproject_pkg(
                     newdep, project_dir, group=group, optional=optional
@@ -443,7 +448,7 @@ def handle_requirements_txt(
     handled_files: list[str] | None = None,
 ) -> int:
     """Check or update pinned dependencies of a requirements.txt file."""
-    msg = f"handling requirements file {requirements_txt_path}"
+    msg = f"{command} requirements file {requirements_txt_path}"
     if rec_level > 0:
         msg += f", recursion level {rec_level}"
     logger.info(msg)
@@ -498,26 +503,31 @@ def handle_requirements_txt(
                 if packages and canonicalize_name(pkg_req.name) not in packages:
                     output.write(line)
                 elif latest_version is not None and latest_version != spec.version:
-                    logger.warning(
-                        f"update '{line.strip()}' --> {colorize_updated_version(spec.version, latest_version) if color else latest_version}"
-                    )
-                    output.write(
-                        re.sub(
-                            rf"(===?\s*){re.escape(spec.version)}",
-                            rf"\g<1>{latest_version}",
-                            line,
-                            count=1,
-                        )
-                    )
                     updatable += 1
+                    version = (
+                        colorize_updated_version(spec.version, latest_version)
+                        if color
+                        else latest_version
+                    )
+                    if command == "check":
+                        logger.warning(f"found update '{line.strip()}' --> {version}")
+                        output.write(line)
+                    else:
+                        logger.info(f"updating '{line.strip()}' --> {version}")
+                        output.write(
+                            re.sub(
+                                rf"(===?\s*){re.escape(spec.version)}",
+                                rf"\g<1>{latest_version}",
+                                line,
+                                count=1,
+                            )
+                        )
                 else:
                     output.write(line)
     if command == "update" and updatable > 0:
         with open(requirements_txt_path, "w") as f:
             f.write(output.getvalue())
-        logger.info(
-            "Wrote {updatable} updated package versions to {requirements_txt_path}"
-        )
+        logger.info("Updated {updatable} package version(s) in {requirements_txt_path}")
     return updatable
 
 
