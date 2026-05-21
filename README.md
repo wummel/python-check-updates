@@ -83,7 +83,7 @@ Dependencies are
 * [uv](https://docs.astral.sh/uv/):
   The uv binary must be available for the script to call.  
   puc uses `echo "package" | uv pip compile -` to get latest package versions.  
-  puc uses `uv add "package==<version>"` to update pyproject.toml dependencies.
+  puc uses `uv add "package==<version>"` to update pyproject.toml dependencies and `uv lock --upgrade-package` to update uv.lock dependencies.
 
 * [packaging](https://packaging.pypa.io/):
   Parses dependencies with the packaging.requirements.Requirement class.
