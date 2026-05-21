@@ -72,6 +72,7 @@ lint-shell:
 
 .PHONY: audit
 audit: ## run audit checks
+	zizmor --pedantic .github/workflows/python-package.yml
 	uv audit
 
 .PHONY: reformat

@@ -37,6 +37,8 @@ dev = [
   "ty==0.0.35",
   # for testing
   "pytest==9.0.3",
+  # for auditing github actions
+  "zizmor==1.24.1",
 ]
 
 [build-system]
