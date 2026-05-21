@@ -1,0 +1,77 @@
+# This workflow will install Python dependencies, and run tests with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/tutorials/build-and-test-code/python
+
+name: Python package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and run tests
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # See https://github.com/actions/runner-images for available OS images
+        os: ["ubuntu-24.04", "macos-15", "windows-2025"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    # https://github.com/actions/checkout
+    # https://github.com/actions/checkout/releases/tag/v6.0.2
+    - name: Checkout project
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
+
+    # https://docs.astral.sh/uv/guides/integration/github/
+    # https://github.com/astral-sh/setup-uv
+    # https://github.com/astral-sh/setup-uv/releases/tag/v8.1.0
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      with:
+        version: "0.11.15"
+
+    - name: Set UV_PYTHON to Python ${{ matrix.python-version }}
+      if: runner.os == 'Linux'
+      run: echo "UV_PYTHON=${PYTHON_VERSION}" >> $GITHUB_ENV
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
+
+    - name: Set UV_PYTHON to Python ${{ matrix.python-version }}
+      if: runner.os == 'Windows'
+      run: echo "UV_PYTHON=${env:PYTHON_VERSION}" >> $env:GITHUB_ENV
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
+
+    - name: Install Python ${{ matrix.python-version }}
+      run: uv python install
+
+    - name: Create virtual Python environment
+      run: uv venv
+
+    - name: Install ruff
+      run: uv pip install ruff
+
+    - name: Check linting errors
+      run: uv run --no-sync ruff check src tests
+
+    - name: Check code formatting
+      run: uv run --no-sync ruff format --check src tests
+
+    - name: Install pytest and modules
+      run: uv pip install pytest
+
+    - name: Test with pytest
+      run: uv run --isolated -- pytest --full-trace tests/
