@@ -124,7 +124,8 @@ def update_uvlock_pkg(
         projectdir,
         "--quiet",
         "--color=never",
-        f"--upgrade-package={package}",
+        "--upgrade-package",
+        package,
     ]
     if exclude_newer:
         command.extend(

@@ -172,7 +172,8 @@ def update_pyproject_pkg(
         "--quiet",
         "--frozen",
         "--color=never",
-        f"--upgrade-package={package}",
+        "--upgrade-package",
+        package,
     ]
     if optional and group:
         command.append("--optional")
