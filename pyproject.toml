@@ -34,11 +34,11 @@ dev = [
   # for python code linting
   "ruff==0.15.13",
   # for python type checking
-  "ty==0.0.35",
+  "ty==0.0.36",
   # for testing
   "pytest==9.0.3",
   # for auditing github actions
-  "zizmor==1.24.1",
+  "zizmor==1.25.0",
 ]
 
 [build-system]
@@ -58,4 +58,4 @@ source-include = [
 [tool.project]
 # pin versions of Python and uv for development
 python_version_dev = "3.14.5"
-uv_version_dev = "0.11.15"
+uv_version_dev = "0.11.16"
