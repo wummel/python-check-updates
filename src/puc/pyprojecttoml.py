@@ -14,6 +14,7 @@ from .dependencies import (
     get_python_platform_from_req,
     get_min_python_version_from_req,
     check_requirement,
+    is_newer_version,
 )
 
 
@@ -140,6 +141,10 @@ def update_pyproject_dependencies(
         spec = next(s for s in pkg_req.specifier)
         if latest_version is not None and latest_version != spec.version:
             updatable += 1
+            if not is_newer_version(spec.version, latest_version):
+                logger.warning(
+                    f"{pkg_req.name} latest version {latest_version} is older than specified version {spec.version}"
+                )
             version = (
                 colorize_updated_version(spec.version, latest_version)
                 if color

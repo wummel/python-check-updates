@@ -14,6 +14,7 @@ from .dependencies import (
     get_python_platform_from_req,
     get_min_python_version_from_req,
     parse_requirement,
+    is_newer_version,
 )
 
 
@@ -91,6 +92,10 @@ def handle_requirements_txt(
                     output.write(line)
                 elif latest_version is not None and latest_version != spec.version:
                     updatable += 1
+                    if not is_newer_version(spec.version, latest_version):
+                        logger.warning(
+                            f"{pkg_req.name} latest version {latest_version} is older than specified version {spec.version}"
+                        )
                     version = (
                         colorize_updated_version(spec.version, latest_version)
                         if color
