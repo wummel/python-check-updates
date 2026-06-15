@@ -3,6 +3,11 @@ python-update-checker
 Python-update-checker (puc) checks or updates pinned dependencies
 in `pyproject.toml`, `requirements.txt` or `uv.lock` files.
 
+If you are developing an application you should pin all dependencies.
+When developing a library, only development dependencies shouuld be pinned.
+Since puc updates pinned dependencies, it is mostly suitable
+when developing applications.
+
 See https://github.com/astral-sh/uv/issues/6794 for a discussion
 about different pinning strategies.
 
@@ -26,6 +31,7 @@ Examples
 ---------
 
 ```bash
+
 $ # check all pinned packages for updates in pyproject.toml
 $ puc check pyproject.toml
 puc INFO: check pyproject file pyproject.toml
@@ -37,6 +43,8 @@ $ puc --exclude-newer="7 days" update pyproject.toml
 puc INFO: update pyproject file pyproject.toml
 puc INFO: updating 'ty==0.0.29' --> 0.0.31
 puc INFO: Wrote 1 updated package version(s) to pyproject.toml
+$ # update the project environment after upgrading pyproject.toml
+$ uv sync
 
 $ # check all pinned packages for updates in requirements.txt
 $ puc check requirements.txt
@@ -47,9 +55,9 @@ puc WARNING: found update 'Django==5.2.0' --> 6.0.4
 $ # update only the django package version in requirements.txt
 $ # limit updates to django versions less than 6
 $ puc --package="Django" --constraints="Django<6" update requirements.txt
-INFO: update requirements file requirements.txt
-INFO: updating 'Django==5.2.0' --> 5.2.13
-INFO: Wrote 1 updated package version(s) to requirements.txt
+puc INFO: update requirements file requirements.txt
+puc INFO: updating 'Django==5.2.0' --> 5.2.13
+puc INFO: Wrote 1 updated package version(s) to requirements.txt
 ```
 
 Script behaviour
@@ -62,7 +70,8 @@ from the directory of the `pyproject.toml` file,
 especially if your project relies on a [project directory](https://docs.astral.sh/uv/concepts/projects/layout/) (for example to define additional package indexes in pyproject.toml).
 
 After updating versions in pyproject.toml, run `uv lock --upgrade` to update
-the transitive dependencies in `uv.lock`.
+the transitive dependencies in `uv.lock` and `uv sync` to update your
+virtual environment.
 
 Pinned dependencies are packages with `==` or `===` constraints and no wildcards in the version.
 
@@ -71,8 +80,8 @@ Installation
 -------------
 
 1) Install [python uv](https://docs.astral.sh/uv/getting-started/installation/)
-2) Install puc with `uv pip install python-update-checker`.
-
+2) Install puc with `uv pip install python-update-checker`
+  or run with `uvx --from python-update-checker puc ...` 
 
 
 Architecture
