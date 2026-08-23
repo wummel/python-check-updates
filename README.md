@@ -4,7 +4,7 @@ Python-update-checker (puc) checks or updates pinned dependencies
 in `pyproject.toml`, `requirements.txt` or `uv.lock` files.
 
 If you are developing an application you should pin all dependencies.
-When developing a library, only development dependencies shouuld be pinned.
+When developing a library, only development dependencies should be pinned.
 Since puc updates pinned dependencies, it is mostly suitable
 when developing applications.
 
