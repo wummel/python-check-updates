@@ -16,11 +16,11 @@ from .dependencies import (
 
 def handle_uv_lock(
     uvlock_path: str,
-    command: None | str = None,
+    command: str | None = None,
     packages=None,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
     """Check or update pinned dependencies of a uv.lock file."""
@@ -69,11 +69,11 @@ def update_uvlock_dependency(
     package,
     version,
     project_dir: str,
-    command: None | str = None,
+    command: str | None = None,
     packages=None,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
     """Update uv lock dependency."""
@@ -114,7 +114,7 @@ def update_uvlock_dependency(
 def update_uvlock_pkg(
     package: str,
     projectdir: str,
-    exclude_newer: None | str = None,
+    exclude_newer: str | None = None,
 ) -> None:
     """Update one package in pyproject.toml."""
     command = [

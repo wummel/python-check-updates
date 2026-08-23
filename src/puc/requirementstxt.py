@@ -24,11 +24,11 @@ max_rec_level = 5
 
 def handle_requirements_txt(
     requirements_txt_path: str,
-    command: None | str = None,
+    command: str | None = None,
     packages=None,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     color: bool = True,
     rec_level: int = 0,
     handled_files: list[str] | None = None,

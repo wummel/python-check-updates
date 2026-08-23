@@ -20,11 +20,11 @@ from .dependencies import (
 
 def handle_pyproject_toml(
     pyproject_path: str,
-    command: None | str = None,
+    command: str | None = None,
     packages=None,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
     """Check or update pinned dependencies of a pyproject.toml file.
@@ -97,13 +97,13 @@ def update_pyproject_dependencies(
     dependencies: list[str | dict],
     project_dir: str,
     projectname: str,
-    group: None | str = None,
+    group: str | None = None,
     optional=False,
-    command: None | str = None,
+    command: str | None = None,
     packages=None,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
     """Update given dependency list of a pyproject.toml file."""
@@ -165,7 +165,7 @@ def update_pyproject_pkg(
     dependency: str,
     package: str,
     projectdir: str,
-    group: None | str = None,
+    group: str | None = None,
     optional: bool = False,
 ) -> None:
     """Update one package in pyproject.toml."""

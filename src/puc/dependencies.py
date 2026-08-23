@@ -12,9 +12,9 @@ from .logging import logger
 
 def get_latest_version(
     package: str,
-    exclude_newer: None | str = None,
-    exclude_newer_package: None | str = None,
-    constraint_file: None | str = None,
+    exclude_newer: str | None = None,
+    exclude_newer_package: str | None = None,
+    constraint_file: str | None = None,
     python_platform: str | None = None,
     python_version: str | None = None,
 ) -> str:
@@ -122,9 +122,9 @@ def get_min_python_version_from_req(pkg_req: Requirement) -> str | None:
 
 def parse_requirement(
     line: str,
-    exclude_newer: None | str = None,
-    constraint_file: None | str = None,
-) -> None | str | Requirement:
+    exclude_newer: str | None = None,
+    constraint_file: str | None = None,
+) -> str | Requirement | None:
     """Parse one line of a requirements.txt file."""
     line = line.strip()
     if not line or line.startswith("#"):
