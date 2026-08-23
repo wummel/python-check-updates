@@ -32,17 +32,17 @@ puc = "puc:cli.main"
 # these packages are only needed for development
 dev = [
   # for python code linting
-  "ruff==0.15.16",
+  "ruff==0.16.3",
   # for python type checking
-  "ty==0.0.44",
+  "ty==0.0.72",
   # for testing
-  "pytest==9.0.3",
+  "pytest==9.1.1",
   # for auditing github actions
-  "zizmor==1.25.2",
+  "zizmor==1.29.0",
 ]
 
 [build-system]
-requires = ["uv_build>=0.11,<0.12"]
+requires = ["uv_build>=0.11.32,<0.13"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
@@ -57,5 +57,5 @@ source-include = [
 
 [tool.project]
 # pin versions of Python and uv for development
-python_version_dev = "3.14.6"
-uv_version_dev = "0.11.21"
+python_version_dev = "3.14.7"
+uv_version_dev = "0.12.5"
