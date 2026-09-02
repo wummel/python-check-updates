@@ -99,9 +99,9 @@ checkoutdated-gh: checkratelimit-gh	## check for outdated github projects
 .PHONY: checkratelimit-gh
 checkratelimit-gh: ## test for rate limiting
 	(
-		set +e
-		github-check-outdated astral-sh uv 0
-	    [ "$$?" == 2 ] && exit 1
+	  set +e
+	  github-check-outdated astral-sh uv 0 > /dev/null
+	  if [ "$$?" == 2 ]; then exit 1; fi
 	)
 
 
