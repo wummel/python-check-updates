@@ -19,8 +19,6 @@ MAKEFLAGS += --no-builtin-rules
 PROJECT:=$(shell egrep "^name[[:space:]]*=" pyproject.toml | cut -d'"' -f2)
 VERSION:=$(shell egrep "^version[[:space:]]*=" pyproject.toml | cut -d'"' -f2)
 
-# exclude packages that are newer than this
-EXCLUDE_NEWER:="7 days"
 # Pytest options:
 # --full-trace: print full stacktrace on errors
 PYTESTOPTS?=--full-trace
@@ -100,7 +98,6 @@ checkoutdated: checkoutdated-py checkoutdated-gh
 
 checkoutdated-py:	## Check for outdated package requirements
 	uv run puc \
-	  --exclude-newer $(EXCLUDE_NEWER) \
 	  check pyproject.toml uv.lock
 
 checkoutdated-gh: checkratelimit-gh	## check for outdated github projects
@@ -132,13 +129,9 @@ upgradeoutdated-gh:	checkratelimit-gh
 .PHONY: upgradeoutdated-py
 upgradeoutdated-py:	## upgrade dependencies in pyproject.toml and uv.lock
 	# upgrade pyproject.toml dependencies
-	uv run puc \
-	  --exclude-newer $(EXCLUDE_NEWER) \
-	  update pyproject.toml
+	uv run puc update pyproject.toml
 	# upgrade depencencies in uv lock file
-	uv lock \
-	  --exclude-newer $(EXCLUDE_NEWER) \
-	  --upgrade
+	uv lock --upgrade
 	# install upgraded package versions in virtual environment
 	$(MAKE) init
 
