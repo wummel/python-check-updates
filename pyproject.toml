@@ -36,9 +36,9 @@ dev = [
   # for testing
   "pytest==9.1.1",
   # for python code linting
-  "ruff==0.16.4",
+  "ruff==0.16.5",
   # Markdown style checking and formatting
-  "rumdl==0.2.61",
+  "rumdl==0.2.62",
   # reformat toml files
   "tombi==1.4.1",
   # for python type checking
