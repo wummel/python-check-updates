@@ -49,12 +49,20 @@ def handle_uv_lock(
         if version is None:
             logger.warning(f"missing version in package {uvpackage}")
             continue
+        # respect package filter
+        if packages and canonicalize_name(name) not in packages:
+            logger.info(f"skip package {name} due to package filter")
+            continue
+        # skip virtual packages (ie. the project itself)
+        source = uvpackage.get("source", {})
+        if "virtual" in source:
+            logger.info(f"skip virtual package {name}")
+            continue
         updatable += update_uvlock_dependency(
             name,
             version,
             project_dir,
             command=command,
-            packages=packages,
             exclude_newer=exclude_newer,
             exclude_newer_package=exclude_newer_package,
             constraint_file=constraint_file,
@@ -70,17 +78,12 @@ def update_uvlock_dependency(
     version,
     project_dir: str,
     command: str | None = None,
-    packages=None,
     exclude_newer: str | None = None,
     exclude_newer_package: str | None = None,
     constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
     """Update uv lock dependency."""
-    # respect optional package filter
-    if packages and canonicalize_name(package) not in packages:
-        return 0
-
     try:
         latest_version = get_latest_version(
             package,

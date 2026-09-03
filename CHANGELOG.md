@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8
+
+Release date: xx.xx.xxxx
+
+- Skip virtual packages in uv.lock
+
 ## 0.7
 
 Release date: 03.09.2026
