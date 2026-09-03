@@ -92,7 +92,6 @@ checkoutdated: checkoutdated-py checkoutdated-gh
 checkoutdated-py:	## Check for outdated package requirements
 	uv run puc \
 	  --exclude-newer $(EXCLUDE_NEWER) \
-	  --exclude-newer-package "python-update-checker=1 minute" \
 	  check pyproject.toml uv.lock
 
 checkoutdated-gh: checkratelimit-gh	## check for outdated github projects
