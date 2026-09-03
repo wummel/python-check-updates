@@ -60,7 +60,7 @@ init: ## install python virtual env and required development packages
 ############ Linting and syntax checks ############
 
 .PHONY: lint
-lint: lint-py lint-shell
+lint: lint-py lint-shell lint-md
 
 .PHONY: lint-py
 lint-py: ## lint python code
@@ -69,6 +69,10 @@ lint-py: ## lint python code
 .PHONY: lint-shell
 lint-shell:
 	shellcheck -x scripts/*.sh
+
+.PHONY: lint-md
+lint-md:        ## lint markdown files
+	rumdl check *.md
 
 .PHONY: audit
 audit: ## run audit checks
@@ -79,6 +83,8 @@ audit: ## run audit checks
 reformat: ## format the python code
 	ruff check --fix $(PY_FILES_DIRS)
 	ruff format $(PY_FILES_DIRS)
+	shfmt -w scripts/
+	tombi format pyproject.toml
 
 .PHONY: checkoutdated checkoutdated-py checkoutdated-gh
 checkoutdated: checkoutdated-py checkoutdated-gh
