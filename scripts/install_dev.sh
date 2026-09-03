@@ -44,7 +44,7 @@ install_package() {
   local pkg=$1
   if ! dpkg --status "${pkg}" >/dev/null 2>&1; then
     echo "Installing ${pkg}"
-    sudo apt-get install "${pkg}"
+    sudo apt-get install --assume-yes "${pkg}"
   fi
 }
 
@@ -58,6 +58,8 @@ install_package curl
 install_package direnv
 # lint shell
 install_package shellcheck
+# for formatting shell scripts (used by make reformat)
+install_package shfmt
 
 # the rest of this scripts relies on being in the project directory
 cd "${PROJECTDIR}"
