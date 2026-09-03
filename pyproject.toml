@@ -1,28 +1,28 @@
 [project]
 name = "python-update-checker"
 version = "0.7"
+readme = "README.md"
 requires-python = ">=3.11"
 license = "GPL-3.0-only"
-license_files = [
-    "COPYING",
-]
-readme = "README.md"
 # https://pypi.org/classifiers/
 classifiers = [
-    "Environment :: Console",
-    "Intended Audience :: Developers",
-    "Development Status :: 4 - Beta",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Topic :: Software Development :: Build Tools",
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Build Tools",
 ]
 dependencies = [
   # track compatibility for dependencies, do not pin
   "packaging>=26.1",
+]
+license_files = [
+  "COPYING",
 ]
 
 [project.scripts]
@@ -31,12 +31,16 @@ puc = "puc:cli.main"
 [dependency-groups]
 # these packages are only needed for development
 dev = [
-  # for python code linting
-  "ruff==0.16.4",
-  # for python type checking
-  "ty==0.0.74",
   # for testing
   "pytest==9.1.1",
+  # for python code linting
+  "ruff==0.16.4",
+  # Markdown style checking and formatting
+  "rumdl==0.2.60",
+  # reformat toml files
+  "tombi==1.4.1",
+  # for python type checking
+  "ty==0.0.74",
   # for auditing github actions
   "zizmor==1.29.0",
 ]
@@ -44,6 +48,11 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.11.32,<0.13"]
 build-backend = "uv_build"
+
+[tool.project]
+# pin versions of Python and uv for development
+python_version_dev = "3.14.7"
+uv_version_dev = "0.12.9"
 
 [tool.uv.build-backend]
 module-name = "puc"
@@ -54,8 +63,3 @@ source-include = [
   "scripts/**",
   "tests/**",
 ]
-
-[tool.project]
-# pin versions of Python and uv for development
-python_version_dev = "3.14.7"
-uv_version_dev = "0.12.9"
