@@ -5,6 +5,7 @@
 import subprocess
 import os
 import tomllib
+import logging
 from packaging.utils import canonicalize_name
 from packaging.requirements import Requirement
 
@@ -174,12 +175,15 @@ def update_pyproject_pkg(
         "add",
         "--project",
         projectdir,
-        "--quiet",
         "--frozen",
         "--color=never",
         "--upgrade-package",
         package,
     ]
+    if logger.getEffectiveLevel() <= logging.DEBUG:
+        command.append("--verbose")
+    else:
+        command.append("--quiet")
     if optional and group:
         command.append("--optional")
         command.append(group)

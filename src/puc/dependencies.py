@@ -4,6 +4,7 @@
 
 import subprocess
 import re
+import logging
 from packaging.requirements import Requirement
 from packaging.markers import Variable, MarkerList
 from packaging.version import parse as parse_version
@@ -28,12 +29,15 @@ def get_latest_version(
         "compile",
         "-",
         "--color=never",
-        "--quiet",
         "--no-deps",
         "--no-header",
         "--no-annotate",
         "--no-progress",
     ]
+    if logger.getEffectiveLevel() <= logging.DEBUG:
+        cmd.append("--verbose")
+    else:
+        cmd.append("--quiet")
     if exclude_newer:
         cmd.extend(("--exclude-newer", exclude_newer))
     if exclude_newer_package:
