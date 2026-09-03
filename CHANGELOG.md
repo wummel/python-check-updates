@@ -2,7 +2,7 @@
 
 ## 0.8
 
-Release date: xx.xx.xxxx
+Release date: 03.09.2026
 
 - Skip virtual packages in uv.lock
 
