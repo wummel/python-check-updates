@@ -2,5 +2,7 @@
 
 ## 0.7
 
-- Addded this changelog.
+Release date: 03.09.2026
+
+- Add this changelog.
 - Add `--verbose` to uv when running `puc --debug`.
