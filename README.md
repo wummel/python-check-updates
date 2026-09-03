@@ -1,5 +1,5 @@
-python-update-checker
-======================
+# python-update-checker
+
 Python-update-checker (puc) checks or updates pinned dependencies
 in `pyproject.toml`, `requirements.txt` or `uv.lock` files.
 
@@ -8,16 +8,15 @@ When developing a library, only development dependencies should be pinned.
 Since puc updates pinned dependencies, it is mostly suitable
 when developing applications.
 
-See https://github.com/astral-sh/uv/issues/6794 for a discussion
+See [https://github.com/astral-sh/uv/issues/6794] for a discussion
 about different pinning strategies.
 
-
-Features
----------
+## Features
 
 * updates pinned dependencies, ignores unpinned dependencies
 * supports pyproject.toml, uv.lock and requirements.txt formats
-* supports `[project.dependencies]`, `[project.optional-dependencies]` and `[dependency-groups]` in pyproject.toml
+* supports `[project.dependencies]`, `[project.optional-dependencies]`
+  and `[dependency-groups]` in pyproject.toml
 * supports recursive references (-r) in requirements.txt formats
 * can run in check only mode, ie. it checks if updates are available
 * limit updates to specific packages
@@ -26,9 +25,15 @@ Features
 * (limited) support for environment markers, ie. `"pywin32==311; os_name=='nt'"`
 * runs on Linux, MacOS and Windows platforms
 
+## Quickstart
 
-Examples
----------
+```bash
+
+uvx --from python-update-checker puc --exclude-newer "1 day" update pyproject.toml
+uv sync
+```
+
+## Examples
 
 ```bash
 
@@ -60,48 +65,44 @@ puc INFO: updating 'Django==5.2.0' --> 5.2.13
 puc INFO: Wrote 1 updated package version(s) to requirements.txt
 ```
 
-Script behaviour
------------------
+## Script behaviour
 
 The exit code of `puc check` is non-zero when updates are available.
 
 Checking a `pyproject.toml` or `uv.lock`file with `puc` should be done
 from the directory of the `pyproject.toml` file,
-especially if your project relies on a [project directory](https://docs.astral.sh/uv/concepts/projects/layout/) (for example to define additional package indexes in pyproject.toml).
+especially if your project relies on a [project directory](https://docs.astral.sh/uv/concepts/projects/layout/)
+(for example to define additional package indexes in pyproject.toml).
 
 After updating versions in pyproject.toml, run `uv lock --upgrade` to update
 the transitive dependencies in `uv.lock` and `uv sync` to update your
 virtual environment.
 
-Pinned dependencies are packages with `==` or `===` constraints and no wildcards in the version.
+Pinned dependencies are packages with `==` or `===` constraints
+and no wildcards in the version.
 
-
-Installation
--------------
+## Installation
 
 1) Install [python uv](https://docs.astral.sh/uv/getting-started/installation/)
 2) Install puc with `uv pip install python-update-checker`
-  or run with `uvx --from python-update-checker puc ...` 
+  or run with `uvx --from python-update-checker puc ...`
 
-
-Architecture
--------------
+## Architecture
 
 Dependencies are
 
 * [uv](https://docs.astral.sh/uv/):
   The uv binary must be available for the script to call.  
   puc uses `echo "package" | uv pip compile -` to get latest package versions.  
-  puc uses `uv add "package==<version>"` to update pyproject.toml dependencies and `uv lock --upgrade-package` to update uv.lock dependencies.
+  puc uses `uv add "package==<version>"` to update pyproject.toml
+  dependencies and `uv lock --upgrade-package` to update uv.lock dependencies.
 
 * [packaging](https://packaging.pypa.io/):
   Parses dependencies with the packaging.requirements.Requirement class.
 
 puc needs Python >= 3.11 since it uses the tomllib Python module.
 
-
-Limitations
-------------
+## Limitations
 
 * No support for custom dependency formats in pyproject.toml
   (eg. `[tool.poetry.dependencies]`).
