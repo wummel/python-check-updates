@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9
+
+Release date: xx.xx.xxxx
+
+- Skip editable packages in uv.lock
+
 ## 0.8
 
 Release date: 03.09.2026

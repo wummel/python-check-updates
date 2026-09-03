@@ -35,6 +35,7 @@ class UvLockTest(unittest.TestCase):
         self.assertIn("found update 'ty==", output)
         self.assertIn("found update 'ruff==", output)
         self.assertIn("skip virtual package imadoofus", output)
+        self.assertIn("skip editable package imabellend", output)
 
     @needs_program('uv')
     def test_uvlock_check_package(self):

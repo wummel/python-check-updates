@@ -55,8 +55,13 @@ def handle_uv_lock(
             continue
         # skip virtual packages (ie. the project itself)
         source = uvpackage.get("source", {})
+        # skip virtual packages (ie. the project itself)
         if "virtual" in source:
             logger.info(f"skip virtual package {name}")
+            continue
+        # skip editable packages
+        if "editable" in source:
+            logger.info(f"skip editable package {name}")
             continue
         updatable += update_uvlock_dependency(
             name,
