@@ -57,6 +57,15 @@ init: ## install python virtual env and required development packages
 	uv sync
 
 
+############ Versioning ############
+
+bumpversion-major: _bumpversion-major   ## bump major version
+bumpversion-minor: _bumpversion-minor   ## bump minor version
+
+_bumpversion-%: ## shortcut target for bumpversion
+	bumpversion $*
+
+
 ############ Linting and syntax checks ############
 
 .PHONY: lint
