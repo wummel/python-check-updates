@@ -36,11 +36,11 @@ dev = [
   # for python code linting
   "ruff==0.16.4",
   # Markdown style checking and formatting
-  "rumdl==0.2.60",
+  "rumdl==0.2.61",
   # reformat toml files
   "tombi==1.4.1",
   # for python type checking
-  "ty==0.0.74",
+  "ty==0.0.75",
   # for auditing github actions
   "zizmor==1.29.0",
 ]
