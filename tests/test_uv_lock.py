@@ -28,14 +28,23 @@ class UvLockTest(unittest.TestCase):
     def test_uvlock_check(self):
         """Run puc check"""
         filename = os.path.join(datadir, "uv.lock")
-        cmd = ["uv", "run", "puc", "check", filename]
+        cmd = [
+            "uv",
+            "run",
+            "puc",
+            "--exclude-package",
+            "fragilicous",
+            "check",
+            filename,
+        ]
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
         self.assertIn("found update 'ty==", output)
         self.assertIn("found update 'ruff==", output)
-        self.assertIn("skip virtual package imadoofus", output)
-        self.assertIn("skip editable package imabellend", output)
+        self.assertIn("skip virtual package 'imadoofus'", output)
+        self.assertIn("skip editable package 'imabellend'", output)
+        self.assertIn("skip excluded package 'fragilicous'", output)
 
     @needs_program('uv')
     def test_uvlock_check_package(self):
@@ -59,10 +68,19 @@ class UvLockTest(unittest.TestCase):
         shutil.copy(projectfile, os.path.join(tmpdir, "pyproject.toml"))
         try:
             filename = os.path.join(tmpdir, "uv.lock")
-            cmd = ["uv", "run", "puc", "update", filename]
+            cmd = [
+                "uv",
+                "run",
+                "puc",
+                "--exclude-package",
+                "fragilicous",
+                "update",
+                filename,
+            ]
             result = subprocess.run(cmd, check=True, text=True, capture_output=True)
             output = result.stdout.strip()
             self.assertIn("updating 'ty==", output)
             self.assertIn("updating 'ruff==", output)
+            self.assertIn("skip excluded package 'fragilicous'", output)
         finally:
             shutil.rmtree(tmpdir)

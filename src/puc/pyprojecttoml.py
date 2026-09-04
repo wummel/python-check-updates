@@ -25,6 +25,7 @@ def handle_pyproject_toml(
     packages=None,
     exclude_newer: str | None = None,
     exclude_newer_package: str | None = None,
+    exclude_packages=None,
     constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
@@ -57,6 +58,7 @@ def handle_pyproject_toml(
                 packages=packages,
                 exclude_newer=exclude_newer,
                 exclude_newer_package=exclude_newer_package,
+                exclude_packages=exclude_packages,
                 constraint_file=constraint_file,
                 color=color,
             )
@@ -72,6 +74,7 @@ def handle_pyproject_toml(
                 packages=packages,
                 exclude_newer=exclude_newer,
                 exclude_newer_package=exclude_newer_package,
+                exclude_packages=exclude_packages,
                 constraint_file=constraint_file,
                 color=color,
             )
@@ -86,6 +89,7 @@ def handle_pyproject_toml(
                 packages=packages,
                 exclude_newer=exclude_newer,
                 exclude_newer_package=exclude_newer_package,
+                exclude_packages=exclude_packages,
                 constraint_file=constraint_file,
                 color=color,
             )
@@ -104,6 +108,7 @@ def update_pyproject_dependencies(
     packages=None,
     exclude_newer: str | None = None,
     exclude_newer_package: str | None = None,
+    exclude_packages=None,
     constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
@@ -124,6 +129,10 @@ def update_pyproject_dependencies(
 
         # respect optional package filter
         if packages and canonicalize_name(pkg_req.name) not in packages:
+            logger.info(f"skip filtered package {pkg_req.name!r}")
+            continue
+        if exclude_packages and canonicalize_name(pkg_req.name) in exclude_packages:
+            logger.info(f"skip excluded package {pkg_req.name!r}")
             continue
         try:
             latest_version = get_latest_version(

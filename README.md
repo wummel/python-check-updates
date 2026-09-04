@@ -28,8 +28,9 @@ about different pinning strategies.
 ## Quickstart
 
 ```bash
-
-uvx --from python-update-checker puc --exclude-newer "1 day" update pyproject.toml
+# update dependencies in pyproject.toml to the latest version
+uvx --from python-update-checker puc --exclude-newer="1 day" update pyproject.toml
+# install updated dependencies in virtual environment
 uv sync
 ```
 

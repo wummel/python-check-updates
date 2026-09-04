@@ -1,11 +1,17 @@
 # Changelog
 
+## 0.10.0
+
+Release date: xx.xx.xxxx
+
+- Add `--exclude-package` option.
+
 ## 0.9.0
 
 Release date: 04.09.2026
 
 - Skip editable packages in uv.lock
-- Add puc module __version__ variable and add --version option
+- Add puc module `__version__` variable and add `--version` option
 - Switch to x.y.z version number scheme
 
 ## 0.8

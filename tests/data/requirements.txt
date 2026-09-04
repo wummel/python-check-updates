@@ -6,6 +6,8 @@ ruff ==0.15.9
 pywin32==310; os_name=='nt'
 # arbitrary equality
 certifi===2026.1.4
+# ignore this
+fragilicous==1.0
 
 # unpinned
 requests

@@ -28,6 +28,7 @@ def handle_requirements_txt(
     packages=None,
     exclude_newer: str | None = None,
     exclude_newer_package: str | None = None,
+    exclude_packages=None,
     constraint_file: str | None = None,
     color: bool = True,
     rec_level: int = 0,
@@ -65,6 +66,7 @@ def handle_requirements_txt(
                         packages=packages,
                         exclude_newer=exclude_newer,
                         exclude_newer_package=exclude_newer_package,
+                        exclude_packages=exclude_packages,
                         constraint_file=constraint_file,
                         color=color,
                         rec_level=rec_level + 1,
@@ -89,6 +91,11 @@ def handle_requirements_txt(
                     latest_version = None
                 spec = next(s for s in pkg_req.specifier)
                 if packages and canonicalize_name(pkg_req.name) not in packages:
+                    output.write(line)
+                elif (
+                    exclude_packages
+                    and canonicalize_name(pkg_req.name) in exclude_packages
+                ):
                     output.write(line)
                 elif latest_version is not None and latest_version != spec.version:
                     updatable += 1

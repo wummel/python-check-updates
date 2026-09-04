@@ -71,6 +71,12 @@ def get_option_parser() -> argparse.ArgumentParser:
         help="Limit candidate packages for specific packages to those that were uploaded prior to the given date. Accepts package-date pairs in the format PACKAGE=DATE.",
     )
     parser.add_argument(
+        "--exclude-package",
+        dest="exclude_packages",
+        action="append",
+        help="Ignore given package. Can be used multiple times.",
+    )
+    parser.add_argument(
         "--constraints",
         dest="constraints",
         help="Constrain versions using the given requirements file or string",
@@ -140,6 +146,12 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
         packages = [canonicalize_name(name) for name in optargs.packages]
     else:
         packages = None
+    if optargs.exclude_packages:
+        exclude_packages = [
+            canonicalize_name(name) for name in optargs.exclude_packages
+        ]
+    else:
+        exclude_packages = None
     if dep_file_normalized == "pyproject.toml":
         # pyproject.toml format
         updatable = handle_pyproject_toml(
@@ -148,6 +160,7 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
             command=optargs.command,
             exclude_newer=optargs.exclude_newer,
             exclude_newer_package=optargs.exclude_newer_package,
+            exclude_packages=exclude_packages,
             constraint_file=constraint_file,
             color=optargs.color,
         )
@@ -159,6 +172,7 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
             command=optargs.command,
             exclude_newer=optargs.exclude_newer,
             exclude_newer_package=optargs.exclude_newer_package,
+            exclude_packages=exclude_packages,
             constraint_file=constraint_file,
             color=optargs.color,
         )
@@ -170,6 +184,7 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
             command=optargs.command,
             exclude_newer=optargs.exclude_newer,
             exclude_newer_package=optargs.exclude_newer_package,
+            exclude_packages=exclude_packages,
             constraint_file=constraint_file,
             color=optargs.color,
         )

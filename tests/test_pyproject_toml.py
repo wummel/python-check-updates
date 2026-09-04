@@ -28,7 +28,15 @@ class PyprojectTomlTest(unittest.TestCase):
     def test_pyproject_check(self):
         """Run puc check"""
         filename = os.path.join(datadir, "pyproject.toml")
-        cmd = ["uv", "run", "puc", "check", filename]
+        cmd = [
+            "uv",
+            "run",
+            "puc",
+            "--exclude-package",
+            "fragilicous",
+            "check",
+            filename,
+        ]
         result = subprocess.run(cmd, check=False, text=True, capture_output=True)
         output = result.stdout.strip()
         self.assertTrue(result.returncode > 0)
@@ -37,6 +45,7 @@ class PyprojectTomlTest(unittest.TestCase):
         self.assertIn("found update 'ruff ==", output)
         self.assertIn("found update 'tensorflow==", output)
         self.assertIn("found update 'certifi===", output)
+        self.assertIn("skip excluded package 'fragilicous'", output)
 
     @needs_program('uv')
     def test_pyproject_check_package(self):
@@ -72,7 +81,15 @@ class PyprojectTomlTest(unittest.TestCase):
                 content = f.read()
                 for dep in packagedeps:
                     self.assertIn(dep, content)
-            cmd = ["uv", "run", "puc", "update", filename]
+            cmd = [
+                "uv",
+                "run",
+                "puc",
+                "--exclude-package",
+                "fragilicous",
+                "update",
+                filename,
+            ]
             result = subprocess.run(cmd, check=True, text=True, capture_output=True)
             output = result.stdout.strip()
             self.assertIn("updating 'argcomplete==", output)
@@ -80,6 +97,7 @@ class PyprojectTomlTest(unittest.TestCase):
             self.assertIn("updating 'ruff ==", output)
             self.assertIn("updating 'tensorflow==", output)
             self.assertIn("updating 'certifi===", output)
+            self.assertIn("skip excluded package 'fragilicous'", output)
             # check that old package versions have been updated
             with open(filename) as f:
                 content = f.read()

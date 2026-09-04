@@ -20,6 +20,7 @@ def handle_uv_lock(
     packages=None,
     exclude_newer: str | None = None,
     exclude_newer_package: str | None = None,
+    exclude_packages=None,
     constraint_file: str | None = None,
     color: bool = True,
 ) -> int:
@@ -51,17 +52,20 @@ def handle_uv_lock(
             continue
         # respect package filter
         if packages and canonicalize_name(name) not in packages:
-            logger.info(f"skip package {name} due to package filter")
+            logger.info(f"skip filtered package {name!r}")
+            continue
+        if exclude_packages and canonicalize_name(name) in exclude_packages:
+            logger.info(f"skip excluded package {name!r}")
             continue
         # skip virtual packages (ie. the project itself)
         source = uvpackage.get("source", {})
         # skip virtual packages (ie. the project itself)
         if "virtual" in source:
-            logger.info(f"skip virtual package {name}")
+            logger.info(f"skip virtual package {name!r}")
             continue
         # skip editable packages
         if "editable" in source:
-            logger.info(f"skip editable package {name}")
+            logger.info(f"skip editable package {name!r}")
             continue
         updatable += update_uvlock_dependency(
             name,
