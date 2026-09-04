@@ -21,6 +21,7 @@ from .logging import logger
 from .pyprojecttoml import handle_pyproject_toml
 from .requirementstxt import handle_requirements_txt
 from .uvlock import handle_uv_lock
+from . import __version__
 
 
 def usage(msg: str | None = None) -> None:
@@ -93,6 +94,13 @@ def get_option_parser() -> argparse.ArgumentParser:
         dest="debug",
         default=False,
         help="Print debug messages.",
+    )
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        dest="version",
+        default=False,
+        help="Print version and exit.",
     )
     subparsers = parser.add_subparsers(help='commands', dest='command')
     parser_check = subparsers.add_parser('check', help='check for updated versions')
@@ -174,7 +182,6 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
 
 def main() -> int:
     """Parse options and check or update dependencies."""
-    logger.info(f"{shlex.join(sys.argv)}")
     # parse options
     try:
         optargs = get_option_parser().parse_args(sys.argv[1:])
@@ -182,8 +189,13 @@ def main() -> int:
         logger.exception(exc)
         usage()
     # handle options
+    if optargs.version:
+        print(__version__)
+        return 0
     if optargs.debug:
         logger.setLevel(logging.DEBUG)
+    logger.info(f"{shlex.join(sys.argv)}")
+    logger.debug(f"puc version {__version__}")
     remove_constraint_file = False
     constraints = optargs.constraints
     constraint_file = None
