@@ -2,7 +2,7 @@
 
 ## 0.10.0
 
-Release date: xx.xx.xxxx
+Release date: 04.09.2026
 
 - Add `--exclude-package` option.
 
