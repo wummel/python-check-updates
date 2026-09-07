@@ -48,6 +48,7 @@ def handle_pyproject_toml(
             logger.warning(f"no project defined in {pyproject_path}")
             return updatable
         projectname = project.get("name", None)
+        logger.debug(f"found project name {projectname}")
         # project dependencies
         if "dependencies" in project:
             updatable += update_pyproject_dependencies(
