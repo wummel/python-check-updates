@@ -45,6 +45,7 @@ class UvLockTest(unittest.TestCase):
         self.assertIn("skip virtual package 'imadoofus'", output)
         self.assertIn("skip editable package 'imabellend'", output)
         self.assertIn("skip excluded package 'fragilicous'", output)
+        self.assertIn("skip path package 'superfragilicous'", output)
 
     @needs_program('uv')
     def test_uvlock_check_package(self):

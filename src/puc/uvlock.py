@@ -57,15 +57,19 @@ def handle_uv_lock(
         if exclude_packages and canonicalize_name(name) in exclude_packages:
             logger.info(f"skip excluded package {name!r}")
             continue
-        # skip virtual packages (ie. the project itself)
+        # check package source for skip reasons
         source = uvpackage.get("source", {})
-        # skip virtual packages (ie. the project itself)
         if "virtual" in source:
+            # skip virtual packages (ie. the project itself)
             logger.info(f"skip virtual package {name!r}")
             continue
-        # skip editable packages
         if "editable" in source:
+            # skip editable packages
             logger.info(f"skip editable package {name!r}")
+            continue
+        if "path" in source:
+            # skip local packages provided by file path
+            logger.info(f"skip path package {name!r}")
             continue
         updatable += update_uvlock_dependency(
             name,

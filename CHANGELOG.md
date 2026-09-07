@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+Release date: 07.09.2026
+
+- Skip local path packages in uv.lock
+
 ## 0.10.0
 
 Release date: 04.09.2026

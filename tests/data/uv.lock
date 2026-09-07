@@ -69,3 +69,9 @@ sdist = { url = "https://files.pythonhosted.org/packages/47/d5/853561de49fae38c5
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/55/87280a994d6a2d2647c65e12abbc997ed49835794366153c04c4d9304d76/ty-0.0.29-py3-none-win_arm64.whl", hash = "sha256:f9794bbd1bb3ce13f78c191d0c89ae4c63f52c12b6daa0c6fe220b90d019d12c", size = 10428165, upload-time = "2026-04-05T15:01:34.665Z" },
 ]
+
+[[package]]
+name = "superfragilicous"
+version = "1"
+source = { path = "third_party/superfragilicous-1.tar.gz" }
+dependencies = [ ]
