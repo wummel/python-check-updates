@@ -24,6 +24,8 @@ urllib3 @ https://example.com/urllib3/urllib3/archive/refs/tags/1.26.8.zip
 # It is possible to refer to other requirement files or constraints files.
 -r other-requirements.txt
 -c constraints.txt
+# non-existing requirement
+-r imadoofus.txt
 
 # refer to specific local distribution paths
 ./downloads/numpy-1.9.2-cp34-none-win32.whl

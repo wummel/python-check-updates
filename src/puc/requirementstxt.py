@@ -59,7 +59,11 @@ def handle_requirements_txt(
                 output.write(line)
                 base_dir = os.path.dirname(requirements_txt_path)
                 requirements_txt_child = os.path.join(base_dir, pkg_req)
-                if os.path.abspath(requirements_txt_child) not in handled_files:
+                if not os.path.isfile(requirements_txt_child):
+                    logger.warning(
+                        f"requirements file {requirements_txt_path} references non-existing requirements file {requirements_txt_child!r}"
+                    )
+                elif os.path.abspath(requirements_txt_child) not in handled_files:
                     updatable += handle_requirements_txt(
                         requirements_txt_child,
                         command,
