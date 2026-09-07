@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+Release date: 07.09.2026
+
+- Check referenced requirements.txt files.
+
 ## 1.0.0
 
 Release date: 07.09.2026
