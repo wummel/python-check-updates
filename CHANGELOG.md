@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+Release date: 07.09.2026
+
+- Increase uv.lock file size limit to 10MB.
+
 ## 0.12.0
 
 Release date: 07.09.2026
