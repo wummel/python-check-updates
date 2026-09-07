@@ -53,19 +53,8 @@ def handle_uv_lock(
         if exclude_packages and canonicalize_name(name) in exclude_packages:
             logger.info(f"skip excluded package {name!r}")
             continue
-        # check package source for skip reasons
-        source = uvpackage.get("source", {})
-        if "virtual" in source:
-            # skip virtual packages (ie. the project itself)
-            logger.info(f"skip virtual package {name!r}")
-            continue
-        if "editable" in source:
-            # skip editable packages
-            logger.info(f"skip editable package {name!r}")
-            continue
-        if "path" in source:
-            # skip local packages provided by file path
-            logger.info(f"skip path package {name!r}")
+        # check source
+        if not check_source_registry(uvpackage, name):
             continue
         version = uvpackage.get("version", None)
         if version is None:
@@ -84,6 +73,33 @@ def handle_uv_lock(
     if command == "update":
         logger.info(f"updated {updatable} package version(s) in {uvlock_path}")
     return updatable
+
+
+def check_source_registry(uvpackage, name):
+    """Check for a registry source, other known non-registry
+    sources are skipped.
+    """
+    # check package source for skip reasons
+    source = uvpackage.get("source", {})
+    if "virtual" in source:
+        # skip virtual packages (ie. the project itself)
+        logger.info(f"skip virtual package {name!r}")
+        return False
+    if "editable" in source:
+        # skip editable packages
+        logger.info(f"skip editable package {name!r}")
+        return False
+    if "path" in source:
+        # skip local packages provided by file path
+        logger.info(f"skip path package {name!r}")
+        return False
+    if "git" in source:
+        # skip git packages provided by URL
+        logger.info(f"skip git package {name!r}")
+        return False
+    if "registry" not in source:
+        logger.warning(f"no registry entry found for package {name!r}")
+    return True
 
 
 def update_uvlock_dependency(

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0
+
+Release date: 07.09.2026
+
+- Skip git packages in uv.lock
+
 ## 1.1.0
 
 Release date: 07.09.2026

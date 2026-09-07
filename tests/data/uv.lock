@@ -74,3 +74,9 @@ name = "superfragilicous"
 version = "1"
 source = { path = "third_party/superfragilicous-1.tar.gz" }
 dependencies = [ ]
+
+[[package]]
+name = "fragilicous-git"
+version = "1"
+source = { git = "https://example.com/fragilicous-git/fragilicous-git.git#3a2dd24bdb6484c1c0da1116043586ec22a32962" }
+dependencies = [ ]

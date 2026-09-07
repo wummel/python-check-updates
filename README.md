@@ -29,6 +29,7 @@ uv sync
 * supports recursive references (-r) in requirements.txt formats
 * can run in check only mode, ie. it checks if updates are available
 * limit updates to specific packages
+* can ignore packages
 * limit updates with package version constraints (ie. "django<6")
 * limit updates to versions that were uploaded prior to a given date
 * (limited) support for environment markers, ie. `"pywin32==311; os_name=='nt'"`
