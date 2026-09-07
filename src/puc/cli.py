@@ -138,9 +138,11 @@ def handle_dependency_file(dep_file: str, optargs, constraint_file):
     """Check a dependency file for updates."""
     if not os.path.isfile(dep_file):
         usage(f"file {dep_file} not found or not a regular file")
-    # limit to 1MB to prevent denial-of-service
-    if os.stat(dep_file).st_size > 1024 * 1014:
-        usage(f"file {dep_file} is >1 MB")
+    # limit to 10 MB as a sanity check
+    size_bytes = os.stat(dep_file).st_size
+    if size_bytes > 10 * 1024 * 1014:
+        size_mb = size_bytes / 1024 / 1024
+        usage(f"file {dep_file} is too large ({size_mb:.2f} MB)")
     dep_file_normalized = os.path.basename(dep_file).lower()
     if optargs.packages:
         packages = [canonicalize_name(name) for name in optargs.packages]
