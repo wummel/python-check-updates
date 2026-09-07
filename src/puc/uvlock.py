@@ -46,10 +46,6 @@ def handle_uv_lock(
         if name is None:
             logger.warning(f"missing name in package {uvpackage}")
             continue
-        version = uvpackage.get("version", None)
-        if version is None:
-            logger.warning(f"missing version in package {uvpackage}")
-            continue
         # respect package filter
         if packages and canonicalize_name(name) not in packages:
             logger.info(f"skip filtered package {name!r}")
@@ -70,6 +66,10 @@ def handle_uv_lock(
         if "path" in source:
             # skip local packages provided by file path
             logger.info(f"skip path package {name!r}")
+            continue
+        version = uvpackage.get("version", None)
+        if version is None:
+            logger.warning(f"missing version in package {uvpackage}")
             continue
         updatable += update_uvlock_dependency(
             name,

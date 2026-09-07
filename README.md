@@ -11,6 +11,15 @@ when developing applications.
 See [https://github.com/astral-sh/uv/issues/6794] for a discussion
 about different pinning strategies.
 
+## Quickstart
+
+```bash
+# update dependencies in pyproject.toml to the latest version
+uvx --from python-update-checker puc --exclude-newer="7 days" update pyproject.toml
+# install updated dependencies in virtual environment
+uv sync
+```
+
 ## Features
 
 * updates pinned dependencies, ignores unpinned dependencies
@@ -24,15 +33,6 @@ about different pinning strategies.
 * limit updates to versions that were uploaded prior to a given date
 * (limited) support for environment markers, ie. `"pywin32==311; os_name=='nt'"`
 * runs on Linux, MacOS and Windows platforms
-
-## Quickstart
-
-```bash
-# update dependencies in pyproject.toml to the latest version
-uvx --from python-update-checker puc --exclude-newer="1 day" update pyproject.toml
-# install updated dependencies in virtual environment
-uv sync
-```
 
 ## Examples
 

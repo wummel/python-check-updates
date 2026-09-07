@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.0
+
+Release date: 07.09.2026
+
+- Move version check after skip checks.
+- Added project urls.
+
 ## 0.11.0
 
 Release date: 07.09.2026

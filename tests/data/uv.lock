@@ -58,7 +58,6 @@ source = { virtual = "." }
 
 [[package]]
 name = "imabellend"
-version = "1.1.1"
 source = { editable = "." }
 
 [[package]]
