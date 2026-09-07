@@ -25,6 +25,12 @@ license_files = [
   "COPYING",
 ]
 
+[project.urls]
+Changelog = "https://github.com/wummel/python-update-checker/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/wummel/python-update-checker"
+Issues = "https://github.com/wummel/python-update-checker/issues"
+Repository = "https://github.com/wummel/python-update-checker.git"
+
 [project.scripts]
 puc = "puc:cli.main"
 
@@ -40,11 +46,11 @@ dev = [
   # Markdown style checking and formatting
   "rumdl==0.2.62",
   # reformat toml files
-  "tombi==1.4.1",
+  "tombi==1.5.0",
   # for python type checking
   "ty==0.0.75",
   # for auditing github actions
-  "zizmor==1.29.0",
+  "zizmor==1.30.0",
 ]
 
 [build-system]
@@ -54,7 +60,7 @@ build-backend = "uv_build"
 [tool.project]
 # pin versions of Python and uv for development
 python_version_dev = "3.14.7"
-uv_version_dev = "0.12.9"
+uv_version_dev = "0.12.10"
 
 [tool.uv.build-backend]
 module-name = "puc"
