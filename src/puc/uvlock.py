@@ -81,22 +81,17 @@ def check_source_registry(uvpackage, name):
     """
     # check package source for skip reasons
     source = uvpackage.get("source", {})
-    if "virtual" in source:
-        # skip virtual packages (ie. the project itself)
-        logger.info(f"skip virtual package {name!r}")
-        return False
-    if "editable" in source:
-        # skip editable packages
-        logger.info(f"skip editable package {name!r}")
-        return False
-    if "path" in source:
-        # skip local packages provided by file path
-        logger.info(f"skip path package {name!r}")
-        return False
-    if "git" in source:
-        # skip git packages provided by URL
-        logger.info(f"skip git package {name!r}")
-        return False
+    skip_sources = (
+        "virtual",  # virtual packages (ie. the project itself)
+        "editable",  # editable packages
+        "path",  # local packages provided by file path
+        "git",  # git packages provided by URL
+        "directory",  # directory packages provided by local path
+    )
+    for skip_source in skip_sources:
+        if skip_source in source:
+            logger.info(f"skip {skip_source} package {name!r}")
+            return False
     if "registry" not in source:
         logger.warning(f"no registry entry found for package {name!r}")
     return True

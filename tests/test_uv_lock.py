@@ -47,6 +47,7 @@ class UvLockTest(unittest.TestCase):
         self.assertIn("skip excluded package 'fragilicous'", output)
         self.assertIn("skip path package 'superfragilicous'", output)
         self.assertIn("skip git package 'fragilicous-git'", output)
+        self.assertIn("skip directory package 'fragilicous-dir'", output)
 
     @needs_program('uv')
     def test_uvlock_check_package(self):
