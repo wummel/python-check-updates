@@ -18,7 +18,7 @@ classifiers = [
   "Topic :: Software Development :: Build Tools",
 ]
 dependencies = [
-  # track compatibility for dependencies, do not pin
+  # track compatibility, do not pin
   "packaging>=26.1",
 ]
 license_files = [
@@ -44,11 +44,11 @@ dev = [
   # for python code linting
   "ruff==0.16.5",
   # Markdown style checking and formatting
-  "rumdl==0.2.62",
+  "rumdl==0.2.63",
   # reformat toml files
   "tombi==1.5.0",
   # for python type checking
-  "ty==0.0.75",
+  "ty==0.0.77",
   # for auditing github actions
   "zizmor==1.30.0",
 ]
@@ -60,7 +60,7 @@ build-backend = "uv_build"
 [tool.project]
 # pin versions of Python and uv for development
 python_version_dev = "3.14.7"
-uv_version_dev = "0.12.10"
+uv_version_dev = "0.12.11"
 
 [tool.uv.build-backend]
 module-name = "puc"
