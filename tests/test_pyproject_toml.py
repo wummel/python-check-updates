@@ -76,6 +76,7 @@ class PyprojectTomlTest(unittest.TestCase):
                 "ruff ==0.15.9",
                 "tensorflow==2.14.0",
                 "certifi===2026.1.4",
+                "tombi==1.4.0",
             )
             with open(filename) as f:
                 content = f.read()
@@ -97,6 +98,7 @@ class PyprojectTomlTest(unittest.TestCase):
             self.assertIn("updating 'ruff ==", output)
             self.assertIn("updating 'tensorflow==", output)
             self.assertIn("updating 'certifi===", output)
+            self.assertIn("updating 'tombi==", output)
             self.assertIn("skip excluded package 'fragilicous'", output)
             # check that old package versions have been updated
             with open(filename) as f:

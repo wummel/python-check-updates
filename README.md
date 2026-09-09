@@ -26,6 +26,8 @@ uv sync
 * supports pyproject.toml, uv.lock and requirements.txt formats
 * supports `[project.dependencies]`, `[project.optional-dependencies]`
   and `[dependency-groups]` in pyproject.toml
+* supports legacy dependency format `[tool.uv.dev-dependencies]`
+  in pyproject.toml
 * supports recursive references (-r) in requirements.txt formats
 * can run in check only mode, ie. it checks if updates are available
 * limit updates to specific packages
@@ -103,6 +105,19 @@ Dependencies are
   Parses dependencies with the packaging.requirements.Requirement class.
 
 puc needs Python >= 3.11 since it uses the tomllib Python module.
+
+## Updating minimum version requirements
+
+Dependencies like `requests>=1.12` or `django>5` specify a
+minimum version requirement.
+
+Minimum requirements are necessary to work with different versioned
+dependencies, since different distributions package different
+versions of those dependencies.
+Minimum requirements change when the project uses a
+feature that is only available in newer versions of a dependency.
+This cannot be determined automatically by puc.
+So minimum version requirements should be updated manually.
 
 ## Limitations
 

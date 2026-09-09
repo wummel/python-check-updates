@@ -94,6 +94,26 @@ def handle_pyproject_toml(
                 constraint_file=constraint_file,
                 color=color,
             )
+        # update legacy uv dev dependencies
+        # See https://docs.astral.sh/uv/concepts/projects/dependencies/#legacy-dev-dependencies
+        tool_uv = pyproject.get("tool", {}).get("uv", {})
+        deps = tool_uv.get("dev-dependencies", [])
+        if deps:
+            logger.warning(f"Found legacy tool.uv.dev-dependencies in {pyproject_path}, replace with dependency-groups.dev")
+            logger.warning(f"See https://docs.astral.sh/uv/concepts/projects/dependencies/#development-dependencies")
+            updatable += update_pyproject_dependencies(
+                deps,
+                project_dir,
+                projectname,
+                group="dev",
+                command=command,
+                packages=packages,
+                exclude_newer=exclude_newer,
+                exclude_newer_package=exclude_newer_package,
+                exclude_packages=exclude_packages,
+                constraint_file=constraint_file,
+                color=color,
+            )
     if command == "update":
         logger.info(f"updated {updatable} package version(s) in {pyproject_path}")
     return updatable

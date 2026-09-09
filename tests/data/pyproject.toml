@@ -45,3 +45,9 @@ dev = [
 env_dev = [
   {include-group = "dev"},
 ]
+
+# legacy dev dependencies of uv
+[tool.uv]
+dev-dependencies = [
+  "tombi==1.4.0",
+]
