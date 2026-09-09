@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0
+
+Release date: 09.09.2026
+
+- Support legacy `[tool.uv.dev-dependencies]`
+- Warn when poetry-specific dependencies are detected
+
 ## 1.3.0
 
 Release date: 08.09.2026

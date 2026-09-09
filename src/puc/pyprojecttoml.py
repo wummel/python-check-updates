@@ -47,6 +47,11 @@ def handle_pyproject_toml(
         if not project:
             logger.warning(f"no project defined in {pyproject_path}")
             return updatable
+        if pyproject.get("tool", {}).get("poetry", {}).get("dependencies", {}):
+            logger.warning(f"[tool.poetry.dependencies] detected in {pyproject_path}")
+            logger.warning(
+                "consider migrating to uv, see https://docs.astral.sh/uv/guides/migration/"
+            )
         projectname = project.get("name", None)
         logger.debug(f"found project name {projectname}")
         # project dependencies
@@ -99,8 +104,12 @@ def handle_pyproject_toml(
         tool_uv = pyproject.get("tool", {}).get("uv", {})
         deps = tool_uv.get("dev-dependencies", [])
         if deps:
-            logger.warning(f"Found legacy tool.uv.dev-dependencies in {pyproject_path}, replace with dependency-groups.dev")
-            logger.warning(f"See https://docs.astral.sh/uv/concepts/projects/dependencies/#development-dependencies")
+            logger.warning(
+                f"Found legacy tool.uv.dev-dependencies in {pyproject_path}, replace with dependency-groups.dev"
+            )
+            logger.warning(
+                "See https://docs.astral.sh/uv/concepts/projects/dependencies/#development-dependencies"
+            )
             updatable += update_pyproject_dependencies(
                 deps,
                 project_dir,

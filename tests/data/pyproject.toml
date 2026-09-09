@@ -51,3 +51,7 @@ env_dev = [
 dev-dependencies = [
   "tombi==1.4.0",
 ]
+
+# trigger poetry warning
+[tool.poetry.dependencies]
+pytest = "^5.2"

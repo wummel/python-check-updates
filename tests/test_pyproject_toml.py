@@ -46,6 +46,7 @@ class PyprojectTomlTest(unittest.TestCase):
         self.assertIn("found update 'tensorflow==", output)
         self.assertIn("found update 'certifi===", output)
         self.assertIn("skip excluded package 'fragilicous'", output)
+        self.assertIn("[tool.poetry.dependencies] detected", output)
 
     @needs_program('uv')
     def test_pyproject_check_package(self):
